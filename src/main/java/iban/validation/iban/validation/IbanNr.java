@@ -9,7 +9,6 @@ import java.util.List;
  * @author Toma
  *
  */
-
 public class IbanNr {
 
 	/**
