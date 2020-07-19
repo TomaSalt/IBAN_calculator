@@ -124,27 +124,66 @@ public class IbanNr {
 		
 		Boolean iban_tikrinimo_rezultatas;
 		Integer i = 0;
-		Integer konvertuoto_iban_ilgis = konvertuotasIBAN().length();
-		String devyni_simboliai = konvertuotasIBAN().substring(i, i + 9);
-		Integer devyni_sk = Integer.valueOf(devyni_simboliai);
-		Integer liekana = mod97(devyni_sk);
-		konvertuoto_iban_ilgis -= 9;
-		i += 9;
-		while(konvertuoto_iban_ilgis > 7) {
+		if(skaiciuTikrinimoStruktura(this.skaiciai_tikrinimui)) {
+			Integer konvertuoto_iban_ilgis = konvertuotasIBAN().length();
+			String devyni_simboliai = konvertuotasIBAN().substring(i, i + 9);
+			Integer devyni_sk = Integer.valueOf(devyni_simboliai);
+			Integer liekana = mod97(devyni_sk);
+			konvertuoto_iban_ilgis -= 9;
+			i += 9;
+			while(konvertuoto_iban_ilgis > 7) {
+				
+				devyni_simboliai = liekana + konvertuotasIBAN().substring(i, i + 7);
+				devyni_sk = Integer.valueOf(devyni_simboliai);
+				liekana = mod97(devyni_sk);
+				konvertuoto_iban_ilgis -= 7;
+				i += 7;
+			}
+			String like_simboliai = liekana + konvertuotasIBAN().substring(i);
+			Integer like_sk = Integer.valueOf(like_simboliai);
+			liekana = mod97(like_sk);
+			if(liekana == 1) {
+				
+				iban_tikrinimo_rezultatas = true;
+				// Pranešimas vartotojui, jei IBAN teisingas
+				System.out.println("Įvestas IBAN numeris yra teisingas.");
 			
-			devyni_simboliai = liekana + konvertuotasIBAN().substring(i, i + 7);
-			devyni_sk = Integer.valueOf(devyni_simboliai);
-			liekana = mod97(devyni_sk);
-			konvertuoto_iban_ilgis -= 7;
-			i += 7;
-		}
-		String like_simboliai = liekana + konvertuotasIBAN().substring(i);
-		Integer like_sk = Integer.valueOf(like_simboliai);
-		liekana = mod97(like_sk);
-		if(liekana == 1) 
-			iban_tikrinimo_rezultatas = true;
-		else 
+			} else {
+				iban_tikrinimo_rezultatas = false;
+				// Pranešimas vartotojui, jei IBAN neteisingas
+				System.out.println("Įvesto IBAN numerio skaičiai tikrinimui pagal mod 97 yra netinkami.");
+			}
+		} else {
+			
 			iban_tikrinimo_rezultatas = false;
+			// Pranešimas vartotojui, jei IBAN neteisingas
+			System.out.println("Įvestame IBAN numeryje skaičiai tikrinimui yra netinkamos struktūros.");
+		}
 		return iban_tikrinimo_rezultatas;
+	}
+	/**
+	 * skaiciuTikrinimoStruktura Boolean klasės tipo metodas IBAN skaičių tikrinimo struktūrai tikrinti
+	 * @return sk_tikr_struktura
+	 */
+	public Boolean skaiciuTikrinimoStruktura(String ar_skaiciai) {
+	
+		Boolean sk_tikr_struktura = true;
+		Character a;
+		for (int i = 0; i < ar_skaiciai.length(); i++ ) {
+			a = ar_skaiciai.charAt(i);
+			if(arSimbolisYraSkaicius(a)) {
+				sk_tikr_struktura = true;
+			} else {
+
+				sk_tikr_struktura = false;
+				break;
+			}
+		}
+		return sk_tikr_struktura;
+	}
+	private Boolean arSimbolisYraSkaicius(Character a) {
+		
+		Boolean ar_simb_yra_sk = Character.isDigit(a);
+		return ar_simb_yra_sk;
 	}
 }

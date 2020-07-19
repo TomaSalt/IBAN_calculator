@@ -26,32 +26,48 @@ public class Rezimas1 {
 	 * Metodas, skirtas pasirinktam 1 režimo programai vykdyti
 	 */
 	public void rezimasVienas() {
-    	
+		
+		// Pranešimas vartotojui
     	System.out.println("Įveskite IBAN numerį:");
+    	// Skaitoma įvedama reikšmė iš klaviatūros
     	Scanner scan1 = new Scanner(System.in);
     	iban_numeris = scan1.nextLine();
-		String salis = iban_numeris.substring(0, 2);
-		IbanSalis iban_salis = new IbanSalis(salis);
-		if(iban_salis.arIbanSalis()) {
-			salies_iban_ilgis = iban_salis.saliesSimboliuKiekis();
-			if (salies_iban_ilgis == iban_numeris.length()) {
+    	IbanSutvarkymas sutvarkytas_iban = new IbanSutvarkymas(iban_numeris);
+		if (sutvarkytas_iban.arNeraNetinkamuSimboliu()) {
+			// Perrašomas IBAN numeris
+			iban_numeris = sutvarkytas_iban.getIban_numeris();
+	    	// Atrenkami pirmi du IBAN simboliai
+			String salis = iban_numeris.substring(0, 2);
+			IbanSalis iban_salis = new IbanSalis(salis);
+			// Tikrinama, ar šalis IBAN narė
+			if(iban_salis.arIbanSalis()) {
 				
-				String sk_tikrinimui = iban_numeris.substring(2, 4);
-				String bban_nr = iban_numeris.substring(4);
-				IbanNr iban_nr = new IbanNr(salis, sk_tikrinimui, bban_nr);
-				Boolean ar_teisingas = iban_nr.ibanTikrinimas();
-				System.out.println("Įvestas IBAN numeris " + iban_numeris);
-				System.out.println("Salis " + salis);
-				System.out.println("Skaiciai tikrinimui " + sk_tikrinimui);
-				System.out.println("BBAN " + bban_nr);
-				if (ar_teisingas)
-					System.out.println("Įvestas IBAN numeris yra teisingas.");
-				else System.out.println("Įvestas IBAN numeris yra neteisingas.");
+				salies_iban_ilgis = iban_salis.saliesSimboliuKiekis();
+				// Tikrinamas IBAN numerio ilgis
+				if (salies_iban_ilgis == iban_numeris.length()) {
+					
+					String sk_tikrinimui = iban_numeris.substring(2, 4);
+					String bban_nr = iban_numeris.substring(4);
+					IbanNr iban_nr = new IbanNr(salis, sk_tikrinimui, bban_nr);
+					//Tikrinama, ar IBAN struktūra teisinga
+					Boolean ar_teisingas = iban_nr.ibanTikrinimas();
+					/*System.out.println("Salis " + salis);
+					System.out.println("Skaiciai tikrinimui " + sk_tikrinimui);
+					System.out.println("BBAN " + bban_nr);*/
+	
+				} else {
+					// Pranešimas vartotojui, jei IBAN numerio ilgis netinkamas
+					System.out.println("Įvestas IBAN numeris neatitinka pagal šalį nustatyto ilgio.");
+				}
 			} else {
-				
-				System.out.println("Įvestas IBAN numeris neatitinka ilgio.");
+				// Pranešimas vartotojui, jei šalis ne IBAN narė
+				System.out.println("Šalis nepalaiko IBAN.");
 			}
-		} else System.out.println("Šalis nepalaiko IBAN.");
+		} else {
+			// Pranešimas vartotojui, kad IBAN numeryje yra netinkamų simbolių
+			System.out.println("IBAN numeryje yra netinkamų simbolių.");
+		}	
+			
 	}
 
 }

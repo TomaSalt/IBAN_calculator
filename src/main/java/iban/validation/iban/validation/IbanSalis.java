@@ -17,6 +17,7 @@ public class IbanSalis {
 	 * Sukuria Integer klasės tipo kintamąjį salies numeriui
 	 */
 	private Integer salies_nr;
+	private final String[][] saliu_bban_struktura = {{},{}};
 	
 	public IbanSalis(String salis) {
 		
